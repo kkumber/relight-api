@@ -10,12 +10,14 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'password1', 'password2', 'email']
-    
+
+    #Function to validate passwords
     def validate(self, data):
         if data['password1'] != data['password2']:
             raise serializers.ValidationError({'password': 'Passwords do not match'})
         return data
     
+    #Save password as a hash
     def create(self, validated_data):
         username = validated_data['username']
         password = validated_data['password1']
