@@ -1,11 +1,11 @@
 from django.urls import path
 from .serializers import UserRegistrationSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from . import views
 
 #Urls
 urlpatterns = [
     path('register/', views.RegisterView.as_view()),
-    path('api/token/', TokenObtainPairView.as_view()),
-    path('api/token/refresh/', TokenRefreshView.as_view()),
+    path('auth/login/', views.LoginView.as_view()),
+    path('auth/token/refresh/', views.RefreshTokenView.as_view),
+    path('auth/logout/', views.LogoutView.as_view()),
 ]
