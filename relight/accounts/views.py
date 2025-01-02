@@ -15,6 +15,7 @@ class RegisterView(generics.CreateAPIView):
 
 class LoginView(APIView):
     def post(self, request):
+        # serialized data for validation
         serializer = UserLoginSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({'error': serializer.errors}, status=400)
@@ -23,17 +24,22 @@ class LoginView(APIView):
         password = serializer.validated_data['password']
         
         response = Response()
+        # Authenticate user
         user = authenticate(request, username=username, password=password)
         if user is not None:
             if user.is_active:
+                # Get a refresh token with user credentials
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
+                # Use csrf
                 csrf_token = csrf.get_token(request)
+                # Return a response with an access token so frontend can store it
                 response = Response({
                     'message': 'Login Successful',
                     'access_token': access_token,
                     'csrf_token': csrf_token,
                 })
+                # Set the refresh token in an httponly cookie
                 response.set_cookie(
                     key='refresh_token',
                     value=str(refresh),
@@ -50,19 +56,21 @@ class LoginView(APIView):
     
 class RefreshTokenView(APIView):
     def post(self, request):
+        # Get the fresh token from cookies
         refresh_token = request.COOKIES.get('refresh_token')
         if not refresh_token:
             return Response({'error': 'Refresh token not found'}, status=401)
         
         try:
+            # Try to get another refresh token
             refresh = RefreshToken(refresh_token)
             access_token = str(refresh.access_token)
-            return Response({'access_token': access_token})
+            return Response({'access_token': access_token}) # Return a new access token
         except Exception as e:
             return Response({'error': 'Invalid refresh token'}, status=401)
         
 class LogoutView(APIView):
     def post(self, request):
         response = Response({'message': 'Logout Successful'})
-        response.delete_cookie('refresh_token')
+        response.delete_cookie('refresh_token') # Delete refresh token from cookies on logout
         return response
