@@ -27,30 +27,27 @@ class LoginView(APIView):
         # Authenticate user
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            if user.is_active:
-                # Get a refresh token with user credentials
-                refresh = RefreshToken.for_user(user)
-                access_token = str(refresh.access_token)
-                # Use csrf
-                csrf_token = csrf.get_token(request)
-                # Return a response with an access token so frontend can store it
-                response = Response({
-                    'message': 'Login Successful',
-                    'access_token': access_token,
-                    'csrf_token': csrf_token,
-                })
-                # Set the refresh token in an httponly cookie
-                response.set_cookie(
-                    key='refresh_token',
-                    value=str(refresh),
-                    httponly=True,
-                    secure=True,
-                    samesite='Lax',
-                    max_age=86400,
-                )
-                return response
-            else:
-                return Response({'No active':'This account is not active'}, status=401)
+            # Get a refresh token with user credentials
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            # Use csrf
+            csrf_token = csrf.get_token(request)
+            # Return a response with an access token so frontend can store it
+            response = Response({
+                'message': 'Login Successful',
+                'access_token': access_token,
+                'csrf_token': csrf_token,
+            })
+            # Set the refresh token in an httponly cookie
+            response.set_cookie(
+                key='refresh_token',
+                value=str(refresh),
+                httponly=True,
+                secure=True,
+                samesite='Lax',
+                max_age=86400,
+            )
+            return response
         else:
             return Response({'Invalid': 'Invalid credientials'}, status=401)
     
