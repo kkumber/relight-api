@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
     'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
 ]
 
 CLOUDINARY_STORAGE = {
@@ -75,7 +76,7 @@ CLOUDINARY_STORAGE = {
 # Allow frontend domain for CORS
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Your frontend's address
+    "http://localhost:5173",  # Your frontend's address
 ]
 
 CSRF_COOKIE_SECURE = True
