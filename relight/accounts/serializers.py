@@ -13,7 +13,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     #Function to validate passwords
     def validate(self, data):
-        if data['password1'] != data['password2']:
+        print(f"Incoming data: {data}")
+        if data.get('password1') != data.get('password2'):
             raise serializers.ValidationError({'password': 'Passwords do not match'})
         return data
     
