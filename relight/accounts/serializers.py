@@ -16,7 +16,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         print(f"Incoming data: {data}")
         if data.get('password1') != data.get('password2'):
             raise serializers.ValidationError({'password': 'Passwords do not match'})
+        
+        if User.objects.filter(username=data.get('username')).exists():
+            raise serializers.ValidationError({'username': 'Username already exists'})
+        
+        if User.objects.filter(email=data.get('email')).exists():
+            raise serializers.ValidationError({'email': 'Email already exists'})
+        
         return data
+    
+        
     
     #Save password as a hash
     def create(self, validated_data):
