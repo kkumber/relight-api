@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from django.conf import settings
 from rest_framework import generics
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
@@ -22,7 +24,6 @@ class LoginView(APIView):
         
         username = serializer.validated_data['username']
         password = serializer.validated_data['password']
-        
         response = Response()
         # Authenticate user
         user = authenticate(request, username=username, password=password)
