@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 class RegisterView(APIView):
+    # might move the serializer validation logic here to add custom responses
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
