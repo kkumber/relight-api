@@ -11,23 +11,34 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'password1', 'password2', 'email']
 
-    #Function to validate passwords
+    #Function to validate entries
     def validate(self, data):
-        if data['password1'] != data['password2']:
+        if data.get('password1') != data.get('password2'):
             raise serializers.ValidationError({'password': 'Passwords do not match'})
+        
+        if User.objects.filter(username=data.get('username')).exists():
+            raise serializers.ValidationError({'username': 'Username already exists'})
+        
+        if User.objects.filter(email=data.get('email')).exists():
+            raise serializers.ValidationError({'email': 'Email already exists'})
+        
         return data
-    
+        
     #Save password as a hash
     def create(self, validated_data):
         username = validated_data['username']
         password = validated_data['password1']
         email = validated_data['email']
-        user = User(username=username, email=email)
-        user.set_password(password)
-        user.save()
-        return User
+        user = User.objects.create_user(
+            username=username,
+            password=password,
+            email=email,
+        )
+        return user
+
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
-     
+
+    

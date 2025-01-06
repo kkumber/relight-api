@@ -7,12 +7,24 @@ from rest_framework.response import Response
 from django.conf import settings
 from rest_framework import generics
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
-class RegisterView(generics.CreateAPIView):
-    serializer_class = UserRegistrationSerializer
-
+class RegisterView(APIView):
+    # might move the serializer validation logic here to add custom responses
+    def post(self, request):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': 'Register Successful',
+                'user': serializer.data,
+            })    
+        return Response(serializer.errors, status=400)
+       
+        
 class LoginView(APIView):
     def post(self, request):
         # serialized data for validation
@@ -22,35 +34,31 @@ class LoginView(APIView):
         
         username = serializer.validated_data['username']
         password = serializer.validated_data['password']
-        
         response = Response()
         # Authenticate user
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            if user.is_active:
-                # Get a refresh token with user credentials
-                refresh = RefreshToken.for_user(user)
-                access_token = str(refresh.access_token)
-                # Use csrf
-                csrf_token = csrf.get_token(request)
-                # Return a response with an access token so frontend can store it
-                response = Response({
-                    'message': 'Login Successful',
-                    'access_token': access_token,
-                    'csrf_token': csrf_token,
-                })
-                # Set the refresh token in an httponly cookie
-                response.set_cookie(
-                    key='refresh_token',
-                    value=str(refresh),
-                    httponly=True,
-                    secure=True,
-                    samesite='Lax',
-                    max_age=86400,
-                )
-                return response
-            else:
-                return Response({'No active':'This account is not active'}, status=401)
+            # Get a refresh token with user credentials
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            # Use csrf
+            csrf_token = csrf.get_token(request)
+            # Return a response with an access token so frontend can store it
+            response = Response({
+                'message': 'Login Successful',
+                'access_token': access_token,
+                'csrf_token': csrf_token,
+            })
+            # Set the refresh token in an httponly cookie
+            response.set_cookie(
+                key='refresh_token',
+                value=str(refresh),
+                httponly=True,
+                secure=True,
+                samesite='Lax',
+                max_age=86400,
+            )
+            return response
         else:
             return Response({'Invalid': 'Invalid credientials'}, status=401)
     

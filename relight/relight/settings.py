@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,7 +29,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-from datetime import timedelta
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Lifespan of the access token
@@ -64,6 +69,7 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
     'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
 ]
 
 CLOUDINARY_STORAGE = {
@@ -75,7 +81,7 @@ CLOUDINARY_STORAGE = {
 # Allow frontend domain for CORS
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Your frontend's address
+    "http://localhost:5173",  # Your frontend's address
 ]
 
 CSRF_COOKIE_SECURE = True
