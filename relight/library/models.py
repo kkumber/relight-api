@@ -13,13 +13,19 @@ class BookModel(models.Model):
     sypnosis = models.TextField()
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
     upload_date = models.DateField(auto_now_add=True)
-    slug = models.SlugField(unique=True, blank=True)
+    slug = models.SlugField(unique=True)
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            super(BookModel, self).save(*args, **kwargs)
-            self.slug = f"{slugify(self.title)}-{self.id}"
+            count = 1
+            base_slug = slugify(self.title)
+            slug = base_slug
+            while BookModel.objects.filter(slug=base_slug).exists():
+                slug = f"{base_slug}-{count}"
+                count += 1
+            self.slug = slug
         super(BookModel, self).save(*args, **kwargs)
+
                 
     def __str__(self):
         return self.title or "Untitled"

@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
+load_dotenv()  # Loads the environment variables from the .env file
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -72,11 +76,13 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dkhgtdh3i',
-    'API_KEY': '728368694823328',
-    'API_SECRET': 'FZE5OtSzIo95dhth8mILuBly3PY',
+    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUD_API_KEY'),
+    'API_SECRET': os.getenv('CLOUD_API_SECRET'),
 }
+CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 
 # Allow frontend domain for CORS
 CORS_ALLOW_CREDENTIALS = True
@@ -92,8 +98,6 @@ STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
 
 MEDIA_URL = '/media/'
 
-#Optional, must be in env
-CLOUDINARY_URL='cloudinary://728368694823328:FZE5OtSzIo95dhth8mILuBly3PY@dkhgtdh3i'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
