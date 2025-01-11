@@ -13,8 +13,7 @@ class BookSerializer(serializers.ModelSerializer):
 class UserCommentOnBookSerializer(serializers.ModelSerializer):
     owner = serializers.StringRelatedField(read_only=True)
     post_date = serializers.ReadOnlyField()
-    specific_book = serializers.ReadOnlyField()
     
     class Meta:
         model = UserCommentOnBookModel
-        fields = '__all__'
+        fields = ['content', 'owner', 'post_date']
