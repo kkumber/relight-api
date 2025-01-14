@@ -4,8 +4,13 @@ from .serializers import BookSerializer, UserCommentOnBookSerializer
 from rest_framework import generics, permissions
 from django.contrib.auth.models import User
 from rest_framework.pagination import PageNumberPagination
-import fitz
 from cloudinary.models import CloudinaryField
+import io
+import requests
+import fitz
+from cloudinary.utils import cloudinary_url
+import cloudinary
+import os
 
 # Create your views here.
 class BookListPagination(PageNumberPagination):
@@ -17,25 +22,22 @@ class BookListView(generics.ListCreateAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = BookListPagination
-    
-    
+
     def perform_create(self, serializer):
+        # Save the instance with the user
         book_instance = serializer.save(uploaded_by=self.request.user)
-        
+
+        # Extract file name from the PDF URL
         if book_instance.pdf_file:
-            pdf_path = book_instance.pdf_file.path
-            with fitz.open(pdf_path) as doc:
-                book_instance.author = book_instance.author or doc.metadata.get('author', 'Unknown')
-                book_instance.title = book_instance.title or doc.metadata.get('title', 'Untitled')
-                
-                if not book_instance.book_cover:
-                    page = doc[0]
-                    pix = page.get_pixmap()
-                    cover_path = f"cover_{book_instance.id}.png"
-                    pix.save(cover_path)
-                    book_instance.book_cover = CloudinaryField(cover_path)
-                    
-                book_instance.save()
+            pdf_url = book_instance.pdf_file.url
+            pdf_file_name = os.path.basename(pdf_url).split(".")[0]
+
+            # Set the title to the PDF file name if no title was provided
+            book_instance.title = book_instance.title or pdf_file_name
+            book_instance.save()
+
+
+
                     
 class BookDetailView(generics.RetrieveAPIView):
     queryset = BookModel.objects.all()

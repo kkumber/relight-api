@@ -8,6 +8,11 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookModel
         fields = '__all__'
+    
+    def validate(self, data):
+        data['title'] = data.get('title', '').strip() or 'Untitled'
+        data['author'] = data.get('author', '').strip() or 'Unknown'
+        return data
         
         
 class UserCommentOnBookSerializer(serializers.ModelSerializer):
