@@ -26,17 +26,7 @@ class BookListView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         # Save the instance with the user
         book_instance = serializer.save(uploaded_by=self.request.user)
-
-        # Extract file name from the PDF URL
-        if book_instance.pdf_file:
-            pdf_url = book_instance.pdf_file.url
-            pdf_file_name = os.path.basename(pdf_url).split(".")[0]
-
-            # Set the title to the PDF file name if no title was provided
-            book_instance.title = book_instance.title or pdf_file_name
-            book_instance.save()
-
-
+        book_instance.save()
 
                     
 class BookDetailView(generics.RetrieveAPIView):
