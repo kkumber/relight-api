@@ -86,6 +86,7 @@ CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 
 # Allow frontend domain for CORS
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Your frontend's address
 ]
