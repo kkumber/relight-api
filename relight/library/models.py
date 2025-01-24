@@ -14,6 +14,10 @@ class BookModel(models.Model):
     uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
     upload_date = models.DateField(auto_now_add=True)
     slug = models.SlugField(unique=True)
+    views = models.PositiveIntegerField(default=0)  # Tracks number of views
+    likes = models.ManyToManyField(User, related_name="liked_books", blank=True)  # Tracks likes
+
+
     
     def save(self, *args, **kwargs):
         if not self.slug:

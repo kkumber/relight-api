@@ -18,7 +18,6 @@ class BookListPagination(PageNumberPagination):
 
 
 class BookListView(generics.ListCreateAPIView):
-    queryset = BookModel.objects.all().order_by('title')
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     pagination_class = BookListPagination
@@ -27,6 +26,12 @@ class BookListView(generics.ListCreateAPIView):
         # Save the instance with the user
         book_instance = serializer.save(uploaded_by=self.request.user)
         book_instance.save()
+    
+    def get_queryset(self):
+        sort = self.request.query_params.get('sort_by', 'title')
+        return BookModel.objects.all().order_by(sort)
+        
+    
 
                     
 class BookDetailView(generics.RetrieveAPIView):
