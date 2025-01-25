@@ -17,7 +17,6 @@ class BookModel(models.Model):
     views = models.PositiveIntegerField(default=0)  # Tracks number of views
     likes = models.ManyToManyField(User, related_name="liked_books", blank=True)  # Tracks likes
 
-
     
     def save(self, *args, **kwargs):
         if not self.slug:

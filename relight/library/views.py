@@ -31,9 +31,6 @@ class BookListView(generics.ListCreateAPIView):
         sort = self.request.query_params.get('sort_by', 'title')
         return BookModel.objects.all().order_by(sort)
         
-    
-
-                    
 class BookDetailView(generics.RetrieveAPIView):
     queryset = BookModel.objects.all()
     serializer_class = BookSerializer
