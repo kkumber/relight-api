@@ -31,8 +31,17 @@ class BookListView(generics.ListCreateAPIView):
         sort = self.request.query_params.get('sort_by', 'title')
         return BookModel.objects.all().order_by(sort)
         
-    
+class BookSearchView(generics.ListAPIView):
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = BookListPagination
 
+    def get_queryset(self):
+        query = self.request.query_params.get('search_query', None);
+        if query:
+            return BookModel.objects.filter(title__istartswith=query)
+        return BookModels.objects.none()
+    
                     
 class BookDetailView(generics.RetrieveAPIView):
     queryset = BookModel.objects.all()
