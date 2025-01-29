@@ -40,7 +40,7 @@ class BookSearchView(generics.ListAPIView):
         query = self.request.query_params.get('search_query', None);
         if query:
             return BookModel.objects.filter(title__istartswith=query)
-        return BookModels.objects.none()
+        return BookModel.objects.none()
     
                     
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
