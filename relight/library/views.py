@@ -31,12 +31,28 @@ class BookListView(generics.ListCreateAPIView):
         sort = self.request.query_params.get('sort_by', 'title')
         return BookModel.objects.all().order_by(sort)
         
-class BookDetailView(generics.RetrieveAPIView):
+class BookSearchView(generics.ListAPIView):
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    pagination_class = BookListPagination
+
+    def get_queryset(self):
+        query = self.request.query_params.get('search_query', None);
+        if query:
+            return BookModel.objects.filter(title__istartswith=query)
+        return BookModels.objects.none()
+    
+                    
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BookModel.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
+
+    def perform_update(self, serializer):
+        serializer.save(likes=[self.request.user])
     
+  
 class UserCommentOnBookView(generics.ListCreateAPIView):
     serializer_class = UserCommentOnBookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -51,3 +67,5 @@ class UserCommentOnBookView(generics.ListCreateAPIView):
         slug = self.kwargs['slug']
         book = get_object_or_404(BookModel, slug=slug)
         serializer.save(owner=self.request.user, specific_book=book)
+
+    
