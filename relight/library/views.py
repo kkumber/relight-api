@@ -50,7 +50,11 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'slug'
 
     def perform_update(self, serializer):
-        serializer.save(likes=[self.request.user])
+        book = serializer.save()
+        if self.request.user in book.likes.all():
+            book.likes.remove(self.request.user)
+        else:
+            book.likes.add(self.request.user)
     
   
 class UserCommentOnBookView(generics.ListCreateAPIView):
