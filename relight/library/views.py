@@ -43,12 +43,16 @@ class BookSearchView(generics.ListAPIView):
         return BookModels.objects.none()
     
                     
-class BookDetailView(generics.RetrieveAPIView):
+class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BookModel.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
+
+    def perform_update(self, serializer):
+        serializer.save(likes=[self.request.user])
     
+  
 class UserCommentOnBookView(generics.ListCreateAPIView):
     serializer_class = UserCommentOnBookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -63,3 +67,5 @@ class UserCommentOnBookView(generics.ListCreateAPIView):
         slug = self.kwargs['slug']
         book = get_object_or_404(BookModel, slug=slug)
         serializer.save(owner=self.request.user, specific_book=book)
+
+    

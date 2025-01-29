@@ -48,6 +48,7 @@ class LoginView(APIView):
                 'message': 'Login Successful',
                 'access_token': access_token,
                 'csrf_token': csrf_token,
+                'user': serializer.data,
             })
             # Set the refresh token in an httponly cookie
             response.set_cookie(
