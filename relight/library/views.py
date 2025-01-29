@@ -42,6 +42,14 @@ class BookSearchView(generics.ListAPIView):
             return BookModel.objects.filter(title__istartswith=query)
         return BookModel.objects.none()
     
+class BookmarkView(generics.ListAPIView):
+    serializer_class = BookSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_queryset(self):
+        queryset = BookModel.objects.filter(likes=self.request.user)
+        return queryset
+    
                     
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BookModel.objects.all()
