@@ -9,6 +9,7 @@ from rest_framework import generics
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 
 # Create your views here.
 
@@ -48,7 +49,7 @@ class LoginView(APIView):
                 'message': 'Login Successful',
                 'access_token': access_token,
                 'csrf_token': csrf_token,
-                'user': serializer.data,
+                'user': {'id': user.id, 'username': user.username},
             })
             # Set the refresh token in an httponly cookie
             response.set_cookie(
@@ -83,3 +84,9 @@ class LogoutView(APIView):
         response = Response({'message': 'Logout Successful'})
         response.delete_cookie('refresh_token') # Delete refresh token from cookies on logout
         return response
+
+
+class UserInfoView(APIView):
+    def get(self, request):
+        print(f"Request: {request.user}")
+        return Response({'id': request.user.id, 'username': request.user.username})
