@@ -8,4 +8,4 @@ urlpatterns = [
     path('books/details/<slug:slug>/', views.BookDetailView.as_view()),
     path('books/details/<slug:slug>/comments/', views.UserCommentOnBookView.as_view()),
 ]
- 
+    
