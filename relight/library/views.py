@@ -5,6 +5,8 @@ from rest_framework import generics, permissions
 from django.contrib.auth.models import User
 from rest_framework.pagination import PageNumberPagination
 from cloudinary.models import CloudinaryField
+from rest_framework.views import APIView
+from rest_framework.response import Response
 import io
 import requests
 import fitz
@@ -57,12 +59,28 @@ class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
 
-    def perform_update(self, serializer):
-        book = serializer.save()
-        if self.request.user in book.likes.all():
-            book.likes.remove(self.request.user)
+
+class BookUpdateLikeView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def post(self, request, slug):
+        book = BookModel.objects.get(slug=slug)
+        if request.user in book.likes.all():
+            book.likes.remove(request.user)
+            return Response({'message': 'Removed from Library'})
         else:
-            book.likes.add(self.request.user)
+            book.likes.add(request.user)
+            return Response({'message': 'Added to Library'})
+
+
+class BookViewsUpdateView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def post(self, request, slug):
+        book = BookModel.objects.get(slug=slug)
+        book.views += 1
+        book.save()
+        return Response({'message': 'Viewed'}, status=200)
     
   
 class UserCommentOnBookView(generics.ListCreateAPIView):

@@ -7,7 +7,7 @@ import fitz
 # Create your models here.
 class BookModel(models.Model):
     pdf_file = CloudinaryField('pdf', resource_type='raw')
-    title = models.CharField(max_length=100, blank=True, null=True)
+    title = models.CharField(max_length=255, blank=True, null=True)
     author = models.CharField(max_length=100, blank=True, null=True)
     book_cover = CloudinaryField('image', resource_type='auto', blank=True, null=True)
     sypnosis = models.TextField()
