@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import BookModel, UserCommentOnBookModel
-from .serializers import BookSerializer, UserCommentOnBookSerializer
+from .models import BookModel, UserCommentOnBookModel, BookmarkModel
+from .serializers import BookSerializer, UserCommentOnBookSerializer, BookmarkSerializer
 from rest_framework import generics, permissions
 from django.contrib.auth.models import User
 from rest_framework.pagination import PageNumberPagination
@@ -17,7 +17,6 @@ import os
 # Create your views here.
 class BookListPagination(PageNumberPagination):
     page_size = 20
-
 
 class BookListView(generics.ListCreateAPIView):
     serializer_class = BookSerializer
@@ -98,4 +97,26 @@ class UserCommentOnBookView(generics.ListCreateAPIView):
         book = get_object_or_404(BookModel, slug=slug)
         serializer.save(owner=self.request.user, specific_book=book)
 
+
+class BookmarkPageCreateView(generics.CreateAPIView):
+    serializer_class = BookmarkSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        slug = self.kwargs['slug']
+        book = get_object_or_404(BookModel, slug=slug)
+        serializer.save(book=book, user=self.request.user)
+    
+
+class BookmarkPageUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = BookmarkSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        slug = self.kwargs['slug']
+        book = get_object_or_404(BookModel, slug=slug)
+        return BookmarkModel.objects.filter(user=user, book=book)
+
+    
     

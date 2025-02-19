@@ -3,6 +3,7 @@ from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 import fitz
+from django.contrib.postgres.fields import ArrayField
 
 # Create your models here.
 class BookModel(models.Model):
@@ -40,3 +41,15 @@ class UserCommentOnBookModel(models.Model):
 
     def __str__(self):
         return self.owner
+
+class BookmarkModel(models.Model):
+    book = models.ForeignKey(BookModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    page = models.IntegerField(("page"))
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user", "book", "page"], name="unique_bookmark")
+        ]
+        verbose_name = "bookmark"
+        verbose_name_plural = "bookmarks"
