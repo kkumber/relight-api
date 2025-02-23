@@ -49,11 +49,11 @@ class BookmarkModel(models.Model):
         models.IntegerField(null=True, blank=True),
         null=True,
         blank=True,
+        unique=True,
         verbose_name='page'
     )    
+
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=["user", "book", "page"], name="unique_bookmark")
+            models.UniqueConstraint(fields=['book', 'user', 'page'], name='bookmarks')
         ]
-        verbose_name = "bookmark"
-        verbose_name_plural = "bookmarks"
