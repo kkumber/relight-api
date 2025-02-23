@@ -45,8 +45,12 @@ class UserCommentOnBookModel(models.Model):
 class BookmarkModel(models.Model):
     book = models.ForeignKey(BookModel, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    page = models.IntegerField(("page"))
-    
+    page = ArrayField(
+        models.IntegerField(null=True, blank=True),
+        null=True,
+        blank=True,
+        verbose_name='page'
+    )    
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=["user", "book", "page"], name="unique_bookmark")
