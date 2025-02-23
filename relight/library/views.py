@@ -98,7 +98,7 @@ class UserCommentOnBookView(generics.ListCreateAPIView):
         serializer.save(owner=self.request.user, specific_book=book)
 
 
-class BookmarkPageCreateView(generics.CreateAPIView):
+class BookmarkPageCreateView(generics.ListCreateAPIView):
     serializer_class = BookmarkSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -106,9 +106,14 @@ class BookmarkPageCreateView(generics.CreateAPIView):
         slug = self.kwargs['slug']
         book = get_object_or_404(BookModel, slug=slug)
         serializer.save(book=book, user=self.request.user)
+        
+    def get_queryset(self):
+        slug = self.kwargs['slug']
+        book = get_object_or_404(BookModel, slug=slug)
+        return UserCommentOnBookModel.objects.filter(specific_book=book, user=self.request.user)
     
 
-class BookmarkPageUpdateView(generics.RetrieveUpdateDestroyAPIView):
+class BookmarkPageDeleteView(generics.RetrieveDestroyAPIView):
     serializer_class = BookmarkSerializer
     permission_classes = [permissions.IsAuthenticated]
 
