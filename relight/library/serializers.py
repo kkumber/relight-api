@@ -21,5 +21,5 @@ class UserCommentOnBookSerializer(serializers.ModelSerializer):
 class BookmarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = BookmarkModel
-        fields = ['book', 'page', 'user']
+        fields = ['book', 'page', 'user', 'id']
         read_only_fields = ['book', 'user']
