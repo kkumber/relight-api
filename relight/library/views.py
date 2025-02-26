@@ -113,15 +113,11 @@ class BookmarkPageCreateView(generics.ListCreateAPIView):
         return BookmarkModel.objects.filter(book=book, user=self.request.user)
     
 
-class BookmarkPageDeleteView(generics.RetrieveDestroyAPIView):
+class BookmarkPageDeleteView(generics.DestroyAPIView):
+    queryset = BookmarkModel.objects.all()
     serializer_class = BookmarkSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        user = self.request.user
-        slug = self.kwargs['slug']
-        book = get_object_or_404(BookModel, slug=slug)
-        return BookmarkModel.objects.filter(user=user, book=book)
 
     
     
