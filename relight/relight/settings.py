@@ -40,7 +40,7 @@ AUTHENTICATION_BACKENDS = [
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # Lifespan of the access token
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),    # Lifespan of the refresh token
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=14),    # Lifespan of the refresh token
     'ROTATE_REFRESH_TOKENS': True,                # Whether to rotate refresh tokens
     'BLACKLIST_AFTER_ROTATION': True,              # Blacklist refresh tokens after rotation
     'AUTH_COOKIE': 'access_token',                 # Name of the HttpOnly cookie for the access token
