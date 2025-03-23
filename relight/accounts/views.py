@@ -10,6 +10,8 @@ from .serializers import UserRegistrationSerializer, UserLoginSerializer
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 
@@ -64,6 +66,7 @@ class LoginView(APIView):
         else:
             return Response({'Invalid': 'Invalid credientials'}, status=401)
     
+@method_decorator(csrf_exempt, name='dispatch')    
 class RefreshTokenView(APIView):
     def post(self, request):
         # Get the fresh token from cookies
