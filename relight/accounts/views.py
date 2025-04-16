@@ -59,7 +59,7 @@ class LoginView(APIView):
                 value=str(refresh),
                 httponly=True,
                 secure=True,
-                samesite='Lax',
+                samesite='None',
                 max_age=1209600,
             )
             return response

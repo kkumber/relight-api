@@ -46,7 +46,7 @@ SIMPLE_JWT = {
     'AUTH_COOKIE': 'access_token',                 # Name of the HttpOnly cookie for the access token
     'AUTH_COOKIE_SECURE': True,                    # Send the cookie over HTTPS only
     'AUTH_COOKIE_HTTP_ONLY': True,                 # Make the cookie inaccessible to JavaScript
-    'AUTH_COOKIE_SAMESITE': 'Lax',                 # Restrict cross-site cookie behavior
+    'AUTH_COOKIE_SAMESITE': 'None',                 # Restrict cross-site cookie behavior
 }
 
 
@@ -91,8 +91,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173", 
 ]
 
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 STATICFILES_STORAGE = 'cloudinary_storage.storage.StaticHashedCloudinaryStorage'
