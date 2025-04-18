@@ -47,6 +47,8 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_SECURE': True,                    # Send the cookie over HTTPS only
     'AUTH_COOKIE_HTTP_ONLY': True,                 # Make the cookie inaccessible to JavaScript
     'AUTH_COOKIE_SAMESITE': 'None',                 # Restrict cross-site cookie behavior
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 

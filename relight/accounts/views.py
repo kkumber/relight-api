@@ -84,8 +84,13 @@ class RefreshTokenView(APIView):
         
 class LogoutView(APIView):
     def post(self, request):
+        token = request.COOKIES.get('refresh_token')
+        try:
+            RefreshToken(token).blacklist()
+        except TokenError:
+            pass
         response = Response({'message': 'Logout Successful'})
-        response.delete_cookie('refresh_token') # Delete refresh token from cookies on logout
+        response.delete_cookie('refresh_token') # Delete refresh token from  cookies on logout
         return response
 
 
