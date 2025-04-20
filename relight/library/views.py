@@ -41,7 +41,7 @@ class BookSearchView(generics.ListAPIView):
     def get_queryset(self):
         query = self.request.query_params.get('search_query', None);
         if query:
-            return BookModel.objects.filter(title__istartswith=query)
+            return BookModel.objects.filter(title__icontains=query)
         return BookModel.objects.none()
     
 class BookmarkView(generics.ListAPIView):
