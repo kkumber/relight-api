@@ -11,5 +11,6 @@ urlpatterns = [
     path('books/details/<slug:slug>/views/', views.BookViewsUpdateView.as_view()),
     path('books/details/<slug:slug>/likes/', views.BookUpdateLikeView.as_view()),
     path('books/details/<slug:slug>/comments/', views.UserCommentOnBookView.as_view()),
+    path('books/details/<slug:slug>/rating/', views.BookRatingsView.as_view()),
 ]
     
