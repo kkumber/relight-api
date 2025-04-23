@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from .models import BookModel, UserCommentOnBookModel, BookmarkModel
-from .serializers import BookSerializer, UserCommentOnBookSerializer, BookmarkSerializer
+from .models import BookModel, UserCommentOnBookModel, BookmarkModel, BookRatingModel
+from .serializers import BookSerializer, UserCommentOnBookSerializer, BookmarkSerializer, BookRatingSerializer
 from rest_framework import generics, permissions
 from django.contrib.auth.models import User
 from rest_framework.pagination import PageNumberPagination
@@ -13,6 +13,8 @@ import fitz
 from cloudinary.utils import cloudinary_url
 import cloudinary
 import os
+from django.db.models import Avg, Value, FloatField
+from django.db.models.functions import Coalesce
 
 # Create your views here.
 class BookListPagination(PageNumberPagination):
@@ -31,8 +33,14 @@ class BookListView(generics.ListCreateAPIView):
     
     def get_queryset(self):
         sort = self.request.query_params.get('sort_by', 'title')
-        return BookModel.objects.all().order_by(sort)
+        return BookModel.objects.annotate(
+            average_rating=Coalesce(
+                Avg('bookratingmodel__score', output_field=FloatField()),
+                Value(0.0)
+            )
+        ).order_by(sort)
         
+
 class BookSearchView(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -44,6 +52,7 @@ class BookSearchView(generics.ListAPIView):
             return BookModel.objects.filter(title__icontains=query)
         return BookModel.objects.none()
     
+    
 class BookmarkView(generics.ListAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -54,11 +63,13 @@ class BookmarkView(generics.ListAPIView):
     
                     
 class BookDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = BookModel.objects.all()
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'slug'
 
+    def get_queryset(self):
+        return BookModel.objects.annotate(average_rating=Avg('bookratingmodel__score')).all()
+    
 
 class BookUpdateLikeView(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -81,7 +92,21 @@ class BookViewsUpdateView(APIView):
         book.views += 1
         book.save()
         return Response({'message': 'Viewed'}, status=200)
-    
+
+
+class BookRatingsView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer = BookRatingSerializer
+
+    def post(self, request, slug):
+        book = BookModel.objects.get(slug=slug)
+        rating, created = BookRatingModel.objects.update_or_create(
+            user = request.user,
+            book = book,
+            defaults = {'score': request.data.get('score')}
+        )
+        return Response({'message': 'Rating Submitted'}, status=200)
+           
   
 class UserCommentOnBookView(generics.ListCreateAPIView):
     serializer_class = UserCommentOnBookSerializer

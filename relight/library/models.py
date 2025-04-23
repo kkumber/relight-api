@@ -16,7 +16,7 @@ class BookModel(models.Model):
     upload_date = models.DateField(auto_now_add=True)
     slug = models.SlugField(unique=True, max_length=255)
     views = models.PositiveIntegerField(default=0)  # Tracks number of views
-    likes = models.ManyToManyField(User, related_name="liked_books", blank=True)  # Tracks likes
+    likes = models.ManyToManyField(User, related_name="liked_books", blank=True)  # Tracks likes    
     
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -28,11 +28,22 @@ class BookModel(models.Model):
                 count += 1
             self.slug = slug
         super(BookModel, self).save(*args, **kwargs)
-
-                
+           
     def __str__(self):
         return self.title or "Untitled"
-    
+
+
+class BookRatingModel(models.Model):
+    book = models.ForeignKey(BookModel, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    score = models.PositiveSmallIntegerField()
+    date_created = models.DateField(auto_now_add=True)
+
+    constraints = [
+            models.UniqueConstraint(fields=['book', 'user'], name='ratings')
+        ]
+
+
 class UserCommentOnBookModel(models.Model):
     specific_book = models.ForeignKey(BookModel, on_delete=models.CASCADE)
     post_date = models.DateField(auto_now_add=True)
@@ -41,6 +52,7 @@ class UserCommentOnBookModel(models.Model):
 
     def __str__(self):
         return self.owner
+
 
 class BookmarkModel(models.Model):
     book = models.ForeignKey(BookModel, on_delete=models.CASCADE)

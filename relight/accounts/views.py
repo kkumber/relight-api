@@ -65,6 +65,7 @@ class LoginView(APIView):
             return response
         else:
             return Response({'Invalid': 'Invalid credientials'}, status=401)
+        
     
 @method_decorator(csrf_exempt, name='dispatch')    
 class RefreshTokenView(APIView):
@@ -81,6 +82,7 @@ class RefreshTokenView(APIView):
             return Response({'access_token': access_token}) # Return a new access token
         except Exception as e:
             return Response({'error': 'Invalid refresh token'}, status=401)
+        
         
 class LogoutView(APIView):
     def post(self, request):
