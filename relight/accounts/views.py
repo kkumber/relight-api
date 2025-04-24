@@ -78,8 +78,15 @@ class RefreshTokenView(APIView):
         try:
             # Try to get another refresh token
             refresh = RefreshToken(refresh_token)
+            user_id = refresh['user_id']
+
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return Response({'error': 'User not found'}, status=404)
+
             access_token = str(refresh.access_token)
-            return Response({'access_token': access_token}) # Return a new access token
+            return Response({'access_token': access_token, 'user' : {'id': user.id, 'username': user.username}})
         except Exception as e:
             return Response({'error': 'Invalid refresh token'}, status=401)
         
