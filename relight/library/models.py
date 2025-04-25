@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django.utils.text import slugify
 import fitz
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MinValueValidator, MaxValueValidator
+from decimal import Decimal
 
 # Create your models here.
 class BookModel(models.Model):
@@ -36,12 +38,13 @@ class BookModel(models.Model):
 class BookRatingModel(models.Model):
     book = models.ForeignKey(BookModel, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    score = models.PositiveSmallIntegerField()
+    score = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(Decimal('0.0')), MaxValueValidator(Decimal('5.0'))])
     date_created = models.DateField(auto_now_add=True)
 
-    constraints = [
-            models.UniqueConstraint(fields=['book', 'user'], name='ratings')
-        ]
+    class Meta:
+        constraints = [
+                models.UniqueConstraint(fields=['book', 'user'], name='ratings')
+            ]
 
 
 class UserCommentOnBookModel(models.Model):
