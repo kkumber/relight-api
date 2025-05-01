@@ -16,16 +16,16 @@ from django.utils.decorators import method_decorator
 # Create your views here.
 
 class RegisterView(APIView):
-    # might move the serializer validation logic here to add custom responses
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({
+                'success': True,
                 'message': 'Register Successful',
                 'user': serializer.data,
             })    
-        return Response(serializer.errors, status=400)
+        return Response({'success': False, 'message': serializer.errors}, status=400)
        
         
 class LoginView(APIView):
@@ -65,7 +65,7 @@ class LoginView(APIView):
             )
             return response
         else:
-            return Response({'success': False ,'message': 'Invalid username or password'}, status=400)
+            return Response({'success': False ,'message': 'Invalid username or password'}, status=200)
         
     
 @method_decorator(csrf_exempt, name='dispatch')    
