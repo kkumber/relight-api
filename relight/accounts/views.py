@@ -48,6 +48,7 @@ class LoginView(APIView):
             csrf_token = csrf.get_token(request)
             # Return a response with an access token so frontend can store it
             response = Response({
+                'success': True,
                 'message': 'Login Successful',
                 'access_token': access_token,
                 'csrf_token': csrf_token,
@@ -64,7 +65,7 @@ class LoginView(APIView):
             )
             return response
         else:
-            return Response({'message': 'Invalid username or password'}, status=401)
+            return Response({'success': False ,'message': 'Invalid username or password'}, status=400)
         
     
 @method_decorator(csrf_exempt, name='dispatch')    
