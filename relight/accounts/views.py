@@ -64,7 +64,7 @@ class LoginView(APIView):
             )
             return response
         else:
-            return Response({'Invalid': 'Invalid credientials'}, status=401)
+            return Response({'message': 'Invalid username or password'}, status=401)
         
     
 @method_decorator(csrf_exempt, name='dispatch')    
