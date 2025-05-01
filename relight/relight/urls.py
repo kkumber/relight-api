@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('library/', include('library.urls')),
     path('accounts/', include('accounts.urls')),
-    path("api/password_reset", include('django_rest_passwordreset.urls', namespace='password_reset')),
+    path("api/password_reset/", include('django_rest_passwordreset.urls', namespace='password_reset')),
     # path('forums/', include('forums.urls')),
 ]

@@ -181,9 +181,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
 
-# EMAIL_BACKEND       = os.getenv('EMAIL_BACKEND')
+EMAIL_BACKEND       = os.getenv('EMAIL_BACKEND')
 EMAIL_HOST          = os.getenv('EMAIL_HOST')
 EMAIL_PORT          = int(os.getenv('EMAIL_PORT', '0'))
 EMAIL_USE_TLS       = os.getenv('EMAIL_USE_TLS') == 'True'

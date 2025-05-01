@@ -5,14 +5,13 @@ import os
 
 @receiver(reset_password_token_created)
 def send_password_reset_token(sender, instance, reset_password_token, *args, **kwargs):
-    # Pull the base URL from the environment
     frontend_base = os.getenv('FRONTEND_URL', 'http://localhost:5173')
     token = reset_password_token.key
     reset_url = f"{frontend_base}/reset-password/{token}"
 
     send_mail(
         subject="RELIGHT Password Reset",
-        message=f"Click here to reset your password: {reset_url}",
+        message=f"Click here to reset your password: {reset_url} \nThe link will expire in 24 hours",
         from_email=os.getenv('DEFAULT_FROM_EMAIL'),
         recipient_list=[reset_password_token.user.email],
         fail_silently=False,
