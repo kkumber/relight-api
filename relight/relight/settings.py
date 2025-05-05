@@ -4,11 +4,8 @@ import os
 from dotenv import load_dotenv
 load_dotenv()  # Loads the environment variables from the .env file
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -16,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY').strip('"')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -78,7 +75,7 @@ CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", 
+    os.getenv('FRONTEND_URL'), 
 ]
 
 SESSION_COOKIE_SAMESITE = 'None'
@@ -130,12 +127,12 @@ WSGI_APPLICATION = 'relight.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'relight_db',  # The name of your PostgreSQL database
-        'USER': 'postgres',  # The PostgreSQL user you created
-        'PASSWORD': 'binbin',  # The password for your PostgreSQL user
-        'HOST': 'localhost',  # For local development
-        'PORT': '5432',  # Default PostgreSQL port
+        'ENGINE': os.getenv('DB_ENGINE'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),  
+        'PASSWORD': os.getenv('DB_PASSWORD'), 
+        'HOST': os.getenv('DB_HOST'),  
+        'PORT': os.getenv('DB_PORT'),  
     }
 }
 
