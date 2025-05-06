@@ -78,6 +78,8 @@ CORS_ALLOWED_ORIGINS = [
     os.getenv('FRONTEND_URL'), 
 ]
 
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
 SESSION_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True
@@ -135,7 +137,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),  
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

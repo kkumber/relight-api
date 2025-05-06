@@ -22,7 +22,7 @@ class BookSerializer(serializers.ModelSerializer):
             'likes',
             'average_rating', 
         ]
-    
+
         
 class UserCommentOnBookSerializer(serializers.ModelSerializer):
     owner = serializers.StringRelatedField(read_only=True)
