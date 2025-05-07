@@ -75,16 +75,16 @@ CLOUDINARY_URL = os.getenv('CLOUDINARY_URL')
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
-    os.getenv('FRONTEND_URL'), 
+    os.getenv('FRONTEND_URL'),
 ]
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 SESSION_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SAMESITE = 'None'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-CSRF_TRUSTED_ORIGINS = ['https://relight-plum.vercel.app']
+CSRF_TRUSTED_ORIGINS = [os.getenv('FRONTEND_URL'), ]
 
 
 
