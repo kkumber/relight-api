@@ -32,13 +32,19 @@ class BookListView(generics.ListCreateAPIView):
         book_instance.save()
     
     def get_queryset(self):
-        sort = self.request.query_params.get('sort_by', 'title')
-        return BookModel.objects.annotate(
+        # Build the base queryset with the rating annotation
+        qs = BookModel.objects.annotate(
             average_rating=Coalesce(
                 Avg('bookratingmodel__score', output_field=FloatField()),
                 Value(0.0)
             )
-        ).order_by(sort)
+        )
+        sort = self.request.query_params.get('sort_by', 'title')
+        if sort == 'views':
+            return qs.order_by('-views')
+        else:
+            return qs.order_by(sort)
+
         
 
 class BookSearchView(generics.ListAPIView):
